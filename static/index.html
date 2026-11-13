@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minh An AI Agent - Smart Sales Operations Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+    
+    * {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #F8F5F0;
+      color: #38354A;
+    }
+
+    /* Claymorphism & Soft 3D Pastel Shadows */
+    .clay-card {
+      background: #FFFFFF;
+      border-radius: 28px;
+      box-shadow: 0 10px 30px -5px rgba(180, 165, 150, 0.15), 
+                  0 4px 12px -2px rgba(180, 165, 150, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .clay-card:hover {
+      box-shadow: 0 14px 35px -4px rgba(170, 155, 140, 0.22), 
+                  0 6px 16px -3px rgba(170, 155, 140, 0.12);
+    }
+
+    .clay-sidebar {
+      background: #EDE6F8;
+      border-radius: 36px;
+      box-shadow: 0 12px 35px -8px rgba(175, 155, 215, 0.25);
+    }
+
+    .clay-badge-purple {
+      background: #E8DEFB;
+      box-shadow: inset 0 -2px 4px rgba(145, 115, 220, 0.2), 0 4px 10px rgba(170, 140, 235, 0.25);
+    }
+    .clay-badge-pink {
+      background: #FDE8EC;
+      box-shadow: inset 0 -2px 4px rgba(235, 120, 145, 0.2), 0 4px 10px rgba(245, 160, 180, 0.25);
+    }
+    .clay-badge-green {
+      background: #E4F7EC;
+      box-shadow: inset 0 -2px 4px rgba(80, 190, 130, 0.2), 0 4px 10px rgba(120, 215, 160, 0.25);
+    }
+    .clay-badge-yellow {
+      background: #FEF4DC;
+      box-shadow: inset 0 -2px 4px rgba(230, 175, 60, 0.2), 0 4px 10px rgba(245, 205, 110, 0.25);
+    }
+    .clay-badge-blue {
+      background: #E2F0FE;
+      box-shadow: inset 0 -2px 4px rgba(90, 160, 240, 0.2), 0 4px 10px rgba(130, 190, 250, 0.25);
+    }
+
+    /* Soft Menu Button Active */
+    .menu-active {
+      background: linear-gradient(135deg, #9E77F6 0%, #835CE6 100%);
+      color: #FFFFFF !important;
+      box-shadow: 0 8px 20px -3px rgba(140, 95, 235, 0.45);
+    }
+
+    /* Custom Checkbox */
+    .custom-checkbox:checked {
+      background-color: #52B788;
+      border-color: #52B788;
+    }
+
+    /* Modal Backdrop */
+    .modal-backdrop {
+      background: rgba(45, 40, 60, 0.35);
+      backdrop-filter: blur(6px);
+    }
+
+    /* Smooth Hover Animation */
+    .btn-bounce:hover {
+      transform: translateY(-2px);
+    }
+    .btn-bounce:active {
+      transform: translateY(0);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #DDD5ED;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="p-3 sm:p-5 lg:p-7 min-h-screen">
+
+  <div class="max-w-[1580px] mx-auto flex flex-col lg:flex-row gap-6">
+
+    <!-- ========================================== -->
+    <!-- LEFT SIDEBAR (Claymorphism Pastel Lilac) -->
+    <!-- ========================================== -->
+    <aside class="clay-sidebar w-full lg:w-72 p-5 flex flex-col justify-between shrink-0">
+      
+      <div class="space-y-6">
+        <!-- 3D Avatar Profile Card -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-4 text-center shadow-sm border border-white/60 relative group">
+          <button onclick="openEditProfileModal()" title="Nhấn để chỉnh sửa tên & lời chào" class="absolute top-3 right-3 w-7 h-7 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-600 flex items-center justify-center text-xs transition">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          
+          <div class="relative w-24 h-24 mx-auto mb-3">
+            <!-- 3D Cute Avatar Image -->
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" 
+                 alt="Avatar" 
+                 class="w-full h-full object-cover rounded-full p-1 bg-gradient-to-tr from-purple-300 via-pink-200 to-amber-100 shadow-md">
+            <span class="absolute bottom-1 right-2 text-xl animate-bounce">👋</span>
+          </div>
+
+          <h3 id="sidebar-user-name" class="font-extrabold text-slate-800 text-base tracking-tight">Hi, Emily! ✨</h3>
+          <p id="sidebar-user-greeting" class="text-xs text-slate-500 mt-0.5">Good to see you again</p>
+          <div class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-[11px] font-bold text-purple-700 border border-purple-100">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Minh An AI Agent</span>
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="space-y-2 text-sm font-semibold">
+          <button onclick="switchView('dashboard')" id="nav-dashboard" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl menu-active transition btn-bounce">
+            <span class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center text-base"><i class="fa-solid fa-house"></i></span>
+            <span>Dashboard</span>
+          </button>
+
+          <button onclick="switchView('agent')" id="nav-agent" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-white/50 transition btn-bounce">
+            <span class="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-base"><i class="fa-solid fa-bolt"></i></span>
+            <span>Xử lý Yêu cầu (AI)</span>
+          </button>
+
+          <button onclick="switchView('approvals')" id="nav-approvals" class="w-full flex items-center justify-between px-4 py-3 rounded-2xl text-slate-600 hover:bg-white/50 transition btn-bounce">
+            <div class="flex items-center space-x-3">
+              <span class="w-8 h-8 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-base"><i class="fa-solid fa-stamp"></i></span>
+              <span>Duyệt Trưởng phòng</span>
+            </div>
+            <span id="nav-pending-badge" class="bg-pink-500 text-white text-[11px] font-bold px-2 py-0.5 rounded-full">0</span>
+          </button>
+
+          <button onclick="switchView('pipeline')" id="nav-pipeline" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-white/50 transition btn-bounce">
+            <span class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-base"><i class="fa-solid fa-folder-open"></i></span>
+            <span>Hồ sơ Cơ hội (Deals)</span>
+          </button>
+
+          <button onclick="switchView('catalog')" id="nav-catalog" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-slate-600 hover:bg-white/50 transition btn-bounce">
+            <span class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-base"><i class="fa-solid fa-boxes-stacked"></i></span>
+            <span>Bảng giá & Tồn kho</span>
+          </button>
+
+          <button onclick="openEditNumbersModal()" class="w-full flex items-center space-x-3 px-4 py-3 rounded-2xl text-purple-700 bg-purple-100/70 hover:bg-purple-200 transition btn-bounce mt-4 font-bold">
+            <span class="w-8 h-8 rounded-xl bg-white text-purple-600 flex items-center justify-center text-base"><i class="fa-solid fa-sliders"></i></span>
+            <span>Sửa Số Liệu Localhost</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom Cute Plant Card -->
+      <div class="mt-8 bg-white/70 rounded-3xl p-4 text-center border border-white/60 relative overflow-hidden group">
+        <div class="text-3xl mb-1 transform group-hover:scale-110 transition duration-300">🪴</div>
+        <div class="text-xs font-bold text-slate-700">Tự do chỉnh sửa số liệu</div>
+        <div class="text-[10px] text-slate-400 mt-0.5">Không bịa số, lưu thẳng SQLite</div>
+        <button onclick="openEditNumbersModal()" class="mt-2.5 text-[11px] font-bold text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 px-3 py-1 rounded-full transition">
+          ✏️ Tùy biến ngay
+        </button>
+      </div>
+
+    </aside>
+
+
+    <!-- ========================================== -->
+    <!-- MAIN CONTENT AREA -->
+    <!-- ========================================== -->
+    <main class="flex-1 space-y-6">
+
+      <!-- TOP HEADER (Good morning, Emily! ☁️) -->
+      <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 id="header-user-greeting-title" class="text-2xl sm:text-3xl font-extrabold text-slate-800 tracking-tight">Good morning, Emily! ☁️</h1>
+            <button onclick="openEditProfileModal()" title="Đổi tên & lời chào" class="text-slate-400 hover:text-purple-600 text-xs transition">
+              <i class="fa-solid fa-pen"></i>
+            </button>
+          </div>
+          <p id="header-user-subtitle" class="text-slate-500 text-sm font-medium mt-0.5">Here's what's happening today.</p>
+        </div>
+
+        <!-- Search & Quick Action Buttons -->
+        <div class="flex items-center gap-3">
+          <button onclick="resetAllDataToZero()" title="Xóa toàn bộ số liệu về 0 để tự nhập từ đầu" class="px-3.5 py-2 rounded-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold transition flex items-center gap-1.5 btn-bounce">
+            <i class="fa-solid fa-eraser"></i>
+            <span>Đưa Số Liệu Về 0</span>
+          </button>
+
+          <button onclick="openEditNumbersModal()" title="Nhập số liệu của bạn" class="px-3.5 py-2 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-700 text-xs font-bold transition flex items-center gap-1.5 btn-bounce">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>Tự Nhập Số Liệu</span>
+          </button>
+
+          <div class="relative">
+            <input type="text" id="global-search-input" onkeyup="handleGlobalSearch(event)" placeholder="Tìm SKU, khách hàng, số điện thoại..." class="pl-10 pr-4 py-2.5 rounded-full bg-white border border-slate-200/80 text-xs w-48 sm:w-64 focus:outline-none focus:ring-2 focus:ring-purple-400 text-slate-700 shadow-sm transition">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+          </div>
+
+          <button onclick="switchView('approvals')" class="w-10 h-10 rounded-full bg-white border border-slate-200/80 flex items-center justify-center text-slate-600 hover:text-purple-600 shadow-sm relative transition btn-bounce">
+            <i class="fa-regular fa-bell"></i>
+            <span id="header-bell-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center shadow-sm">0</span>
+          </button>
+
+          <button onclick="openEditProfileModal()" title="Tùy chỉnh thông tin người dùng" class="w-10 h-10 rounded-full bg-white border border-slate-200/80 flex items-center justify-center text-slate-600 hover:text-purple-600 shadow-sm transition btn-bounce">
+            <i class="fa-regular fa-user"></i>
+          </button>
+        </div>
+      </header>
+
+
+      <!-- ========================================== -->
+      <!-- TOP 4 CLAYMORPHIC KPI METRICS CARDS -->
+      <!-- ========================================== -->
+      <section class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-5">
+        
+        <!-- Card 1: Tasks Done (Purple Check) -->
+        <div onclick="quickEditMetric('custom_kpi_done', 'Tasks Done')" class="clay-card p-5 relative overflow-hidden group cursor-pointer hover:border-purple-300 transition" title="Nhấp để tự nhập số lượng Tasks Done">
+          <button class="absolute top-4 right-4 text-slate-300 group-hover:text-purple-600 text-xs transition">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <div class="flex items-center space-x-3.5">
+            <div class="w-12 h-12 rounded-2xl clay-badge-purple flex items-center justify-center text-purple-600 text-xl font-bold shadow-sm">
+              <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+              <span class="text-xs font-semibold text-slate-400 block">Tasks Done</span>
+              <span id="metric-done" class="text-2xl font-extrabold text-slate-800">0</span>
+            </div>
+          </div>
+          <div class="mt-3 text-xs text-purple-600 font-semibold flex items-center gap-1">
+            <span class="text-slate-400 font-normal">Nhấp để nhập số của bạn</span>
+          </div>
+        </div>
+
+        <!-- Card 2: In Progress (Pink Calendar) -->
+        <div onclick="quickEditMetric('custom_kpi_progress', 'In Progress')" class="clay-card p-5 relative overflow-hidden group cursor-pointer hover:border-pink-300 transition" title="Nhấp để tự nhập số lượng In Progress">
+          <button class="absolute top-4 right-4 text-slate-300 group-hover:text-pink-600 text-xs transition">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <div class="flex items-center space-x-3.5">
+            <div class="w-12 h-12 rounded-2xl clay-badge-pink flex items-center justify-center text-pink-500 text-xl font-bold shadow-sm">
+              <i class="fa-regular fa-calendar-days"></i>
+            </div>
+            <div>
+              <span class="text-xs font-semibold text-slate-400 block">In Progress</span>
+              <span id="metric-progress" class="text-2xl font-extrabold text-slate-800">0</span>
+            </div>
+          </div>
+          <div class="mt-3 text-xs text-pink-500 font-semibold flex items-center gap-1">
+            <span class="text-slate-400 font-normal">Nhấp để nhập số của bạn</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Completed (Green Flag) -->
+        <div onclick="quickEditMetric('custom_kpi_completed', 'Completed')" class="clay-card p-5 relative overflow-hidden group cursor-pointer hover:border-emerald-300 transition" title="Nhấp để tự nhập số lượng Completed">
+          <button class="absolute top-4 right-4 text-slate-300 group-hover:text-emerald-600 text-xs transition">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <div class="flex items-center space-x-3.5">
+            <div class="w-12 h-12 rounded-2xl clay-badge-green flex items-center justify-center text-emerald-500 text-xl font-bold shadow-sm">
+              <i class="fa-solid fa-flag"></i>
+            </div>
+            <div>
+              <span class="text-xs font-semibold text-slate-400 block">Completed</span>
+              <span id="metric-completed" class="text-2xl font-extrabold text-slate-800">0</span>
+            </div>
+          </div>
+          <div class="mt-3 text-xs text-emerald-600 font-semibold flex items-center gap-1">
+            <span class="text-slate-400 font-normal">Nhấp để nhập số của bạn</span>
+          </div>
+        </div>
+
+        <!-- Card 4: Focus Time (Gold Star) -->
+        <div onclick="quickEditMetric('custom_kpi_focus', 'Focus Time')" class="clay-card p-5 relative overflow-hidden group cursor-pointer hover:border-amber-300 transition" title="Nhấp để tự nhập Focus Time">
+          <button class="absolute top-4 right-4 text-slate-300 group-hover:text-amber-600 text-xs transition">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <div class="flex items-center space-x-3.5">
+            <div class="w-12 h-12 rounded-2xl clay-badge-yellow flex items-center justify-center text-amber-500 text-xl font-bold shadow-sm">
+              <i class="fa-solid fa-star"></i>
+            </div>
+            <div>
+              <span class="text-xs font-semibold text-slate-400 block">Focus Time</span>
+              <span id="metric-focus" class="text-2xl font-extrabold text-slate-800">0h</span>
+            </div>
+          </div>
+          <div class="mt-3 text-xs text-amber-500 font-semibold flex items-center gap-1">
+            <span class="text-slate-400 font-normal">Nhấp để nhập số của bạn</span>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- ==================================================== -->
+      <!-- DYNAMIC CONTENT VIEWPORTS (Dashboard, Agent, etc.) -->
+      <!-- ==================================================== -->
+
+      <!-- VIEW 1: DASHBOARD (Matching the image layout) -->
+      <div id="view-dashboard" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- Left 8 Columns: Chart & Recent Activity -->
+        <div class="lg:col-span-8 space-y-6">
+          
+          <!-- Productivity Overview Chart Card -->
+          <div class="clay-card p-6">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-base font-bold text-slate-800">Productivity Overview</h2>
+              <div class="flex items-center gap-2">
+                <button onclick="openEditChartModal()" class="text-xs text-purple-600 hover:text-purple-800 font-bold bg-purple-50 px-2.5 py-1 rounded-full transition">
+                  ✏️ Sửa số liệu biểu đồ
+                </button>
+                <div class="relative">
+                  <select id="chart-filter-select" onchange="changeChartPeriod(this.value)" class="text-xs font-bold text-slate-600 bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-purple-400 cursor-pointer">
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="year">This Year</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- SVG Smooth Curved Chart matching the purple line in Emily's UI -->
+            <div class="relative w-full h-56">
+              <!-- Great Job Badge -->
+              <div id="chart-badge" class="absolute top-2 right-24 bg-purple-100 text-purple-700 text-[11px] font-bold px-3 py-1 rounded-full shadow-sm flex items-center gap-1 animate-pulse">
+                <span>Great job! 🎉</span>
+              </div>
+
+              <svg class="w-full h-full" viewBox="0 0 650 200" preserveAspectRatio="none">
+                <!-- Y-Axis Grid Lines & Labels -->
+                <text x="10" y="20" fill="#94A3B8" font-size="11" font-weight="600">100</text>
+                <line x1="40" y1="16" x2="640" y2="16" stroke="#F1F5F9" stroke-width="1.5" stroke-dasharray="4"/>
+
+                <text x="10" y="65" fill="#94A3B8" font-size="11" font-weight="600">75</text>
+                <line x1="40" y1="61" x2="640" y2="61" stroke="#F1F5F9" stroke-width="1.5" stroke-dasharray="4"/>
+
+                <text x="10" y="110" fill="#94A3B8" font-size="11" font-weight="600">50</text>
+                <line x1="40" y1="106" x2="640" y2="106" stroke="#F1F5F9" stroke-width="1.5" stroke-dasharray="4"/>
+
+                <text x="10" y="155" fill="#94A3B8" font-size="11" font-weight="600">25</text>
+                <line x1="40" y1="151" x2="640" y2="151" stroke="#F1F5F9" stroke-width="1.5" stroke-dasharray="4"/>
+
+                <text x="10" y="195" fill="#94A3B8" font-size="11" font-weight="600">0</text>
+                <line x1="40" y1="190" x2="640" y2="190" stroke="#F1F5F9" stroke-width="1.5"/>
+
+                <!-- Area Gradient -->
+                <defs>
+                  <linearGradient id="purpleGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#9E77F6" stop-opacity="0.25"/>
+                    <stop offset="100%" stop-color="#9E77F6" stop-opacity="0.0"/>
+                  </linearGradient>
+                </defs>
+
+                <!-- Chart Path (Dynamic) -->
+                <path id="chart-area-path" d="" fill="url(#purpleGrad)"/>
+                <path id="chart-line-path" d="" fill="none" stroke="#9E77F6" stroke-width="3.5" stroke-linecap="round"/>
+
+                <!-- Dynamic Points Container -->
+                <g id="chart-points-group"></g>
+              </svg>
+
+              <!-- X-Axis Labels -->
+              <div class="flex justify-between pl-10 pr-2 pt-2 text-[11px] font-semibold text-slate-400" id="chart-x-labels">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+              </div>
+            </div>
+
+            <!-- Quick Trigger Banner for Minh An AI Agent -->
+            <div class="mt-6 pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-purple-50/50 p-4 rounded-2xl border border-purple-100/60">
+              <div class="flex items-center gap-3">
+                <span class="w-10 h-10 rounded-xl bg-purple-500 text-white flex items-center justify-center text-lg shadow-sm">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </span>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-800">AI Agent Xử lý Cơ hội Bán hàng B2B</h4>
+                  <p class="text-[11px] text-slate-500">Tiếp nhận yêu cầu $\rightarrow$ Thẩm định tồn kho & giá $\rightarrow$ Báo giá & Phê duyệt</p>
+                </div>
+              </div>
+              <button onclick="switchView('agent')" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-sm transition btn-bounce flex items-center justify-center gap-1.5">
+                <span>Chạy Thử Nghiệm Ngay</span>
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Recent Activity Card (Matching sample with check, folder, message) -->
+          <div class="clay-card p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-base font-bold text-slate-800">Recent Activity</h2>
+              <button onclick="openAddActivityModal()" class="text-xs text-purple-600 hover:text-purple-800 font-bold flex items-center gap-1">
+                <i class="fa-solid fa-plus text-[10px]"></i> Thêm hoạt động
+              </button>
+            </div>
+
+            <div class="space-y-3.5" id="recent-activity-container">
+              <!-- Dynamically populated from SQLite -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right 4 Columns: To-Do List, Calendar, Encouragement Mascot Card -->
+        <div class="lg:col-span-4 space-y-6">
+          
+          <!-- To-Do List Card (with pink + button) -->
+          <div class="clay-card p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-base font-bold text-slate-800">To-Do List</h2>
+              <button onclick="openAddTaskModal()" title="Thêm công việc mới" class="w-7 h-7 rounded-full bg-pink-400 hover:bg-pink-500 text-white flex items-center justify-center text-xs shadow-sm transition btn-bounce">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+
+            <div class="space-y-3" id="todo-list-container">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+
+          <!-- Mini Calendar Card -->
+          <div class="clay-card p-5">
+            <div class="flex justify-between items-center mb-3">
+              <span class="font-bold text-sm text-slate-800">Calendar</span>
+              <a href="javascript:void(0)" onclick="alert('Đã cập nhật đồng bộ lịch giao hàng & triển khai!')" class="text-xs text-blue-500 font-bold hover:underline">View all</a>
+            </div>
+
+            <!-- Month navigation -->
+            <div class="bg-blue-50/70 rounded-2xl p-3 border border-blue-100/50">
+              <div class="flex justify-between items-center mb-2.5 px-1">
+                <button onclick="changeCalendarMonth(-1)" class="text-slate-400 hover:text-blue-600 text-xs px-1"><i class="fa-solid fa-chevron-left"></i></button>
+                <span id="calendar-month-label" class="text-xs font-bold text-slate-700">May 2026</span>
+                <button onclick="changeCalendarMonth(1)" class="text-slate-400 hover:text-blue-600 text-xs px-1"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+
+              <!-- Calendar Grid -->
+              <div class="grid grid-cols-7 text-center text-[10px] font-bold text-slate-400 gap-y-1.5 mb-1">
+                <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span class="text-pink-400">S</span><span class="text-pink-400">S</span>
+              </div>
+              <div class="grid grid-cols-7 text-center text-xs font-semibold gap-y-1" id="calendar-days-grid">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Encouragement Mascot Card (Cute bunny with heart) -->
+          <div class="clay-card p-5 bg-gradient-to-r from-purple-100/70 via-pink-100/50 to-amber-100/40 border border-purple-200/40 relative overflow-hidden flex items-center justify-between">
+            <div class="max-w-[170px] z-10">
+              <h3 class="font-bold text-sm text-purple-900 leading-snug">You're doing amazing! ✨</h3>
+              <p class="text-[11px] text-purple-700/80 mt-1 font-medium">Keep up the good work</p>
+              <button onclick="openEditNumbersModal()" class="mt-3 text-[10px] font-bold bg-white/90 hover:bg-white text-purple-800 px-2.5 py-1 rounded-full shadow-sm transition">
+                Sửa thông số
+              </button>
+            </div>
+            <!-- 3D Mascot Bunny representation -->
+            <div class="text-5xl pr-1 select-none filter drop-shadow animate-pulse">
+              🐰💖
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- VIEW 2: AI AGENT PROCESSOR (Flowchart & Live Test) -->
+      <div id="view-agent" class="hidden space-y-6">
+        
+        <!-- Header Banner -->
+        <div class="clay-card p-6 bg-gradient-to-r from-purple-50 via-indigo-50 to-white">
+          <div class="flex justify-between items-center mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-8 h-8 rounded-xl bg-purple-600 text-white flex items-center justify-center text-sm font-bold shadow-sm">
+                <i class="fa-solid fa-robot"></i>
+              </span>
+              <h2 class="text-lg font-bold text-slate-800">Quy Trình Xử Lý Cơ Hội Bán Hàng B2B - Minh An Company</h2>
+            </div>
+            <span class="text-xs bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full font-bold">
+              <i class="fa-solid fa-circle text-[8px] mr-1"></i> Live Engine
+            </span>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed max-w-3xl">
+            Tự động thực hiện 6 bước: Tiếp nhận $\rightarrow$ Kiểm tra thông tin $\rightarrow$ Gán 1 trong 6 NVKD $\rightarrow$ Thẩm định tồn kho & giá mới nhất $\rightarrow$ Lập báo giá & kiểm tra hạn mức chiết khấu $\rightarrow$ Phê duyệt & Dự thảo phản hồi.
+          </p>
+
+          <!-- Quick Samples -->
+          <div class="mt-4 pt-4 border-t border-purple-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3" id="agent-samples-list">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Input & Results Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          <!-- Left 5 cols: Input Form -->
+          <div class="lg:col-span-5 space-y-4">
+            <div class="clay-card p-5">
+              <div class="flex justify-between items-center mb-2">
+                <label class="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                  <i class="fa-regular fa-envelope text-purple-600"></i> Nội dung Yêu cầu Khách hàng:
+                </label>
+                <button onclick="document.getElementById('agent-input-textarea').value=''" class="text-[11px] text-slate-400 hover:text-slate-600">Xóa</button>
+              </div>
+              <textarea id="agent-input-textarea" rows="10" class="w-full text-xs font-mono p-3.5 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-purple-400 focus:outline-none text-slate-800 leading-relaxed" placeholder="Dán nội dung email yêu cầu của khách hàng vào đây..."></textarea>
+              
+              <button onclick="executeAgentWorkflow()" class="w-full mt-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-2xl shadow-md transition btn-bounce flex items-center justify-center gap-2 text-xs">
+                <i class="fa-solid fa-play"></i>
+                <span>KÍCH HOẠT AI AGENT XỬ LÝ</span>
+              </button>
+            </div>
+
+            <!-- Flowchart Steps Lightbox -->
+            <div class="clay-card p-5">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600 mb-3 flex items-center gap-1.5">
+                <i class="fa-solid fa-diagram-project text-purple-600"></i> Các Bước Flowchart Minh An
+              </h3>
+              <div class="space-y-2 text-xs" id="flowchart-steps-container">
+                <div class="p-2.5 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between" id="fc-step-1">
+                  <span class="font-medium">1. Bắt đầu: Tiếp nhận yêu cầu</span>
+                  <span class="text-slate-400 font-bold pill">Chờ</span>
+                </div>
+                <div class="p-2.5 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between" id="fc-step-2">
+                  <span class="font-medium">2. Phân loại & Kiểm tra thông tin</span>
+                  <span class="text-slate-400 font-bold pill">Chờ</span>
+                </div>
+                <div class="p-2.5 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between" id="fc-step-3">
+                  <span class="font-medium">3. Tạo Hồ sơ Cơ hội & Gắn NVKD</span>
+                  <span class="text-slate-400 font-bold pill">Chờ</span>
+                </div>
+                <div class="p-2.5 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between" id="fc-step-4">
+                  <span class="font-medium">4. Thẩm định tồn kho & giá mới nhất</span>
+                  <span class="text-slate-400 font-bold pill">Chờ</span>
+                </div>
+                <div class="p-2.5 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between" id="fc-step-5">
+                  <span class="font-medium">5. Lập báo giá & Duyệt vượt quyền</span>
+                  <span class="text-slate-400 font-bold pill">Chờ</span>
+                </div>
+                <div class="p-2.5 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between" id="fc-step-6">
+                  <span class="font-medium">6. Kết thúc: Cập nhật & Theo dõi</span>
+                  <span class="text-slate-400 font-bold pill">Chờ</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right 7 cols: Output Details -->
+          <div class="lg:col-span-7 space-y-4">
+            
+            <div id="agent-output-placeholder" class="clay-card p-12 text-center">
+              <div class="w-16 h-16 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mx-auto mb-3 text-2xl">
+                <i class="fa-solid fa-brain"></i>
+              </div>
+              <h3 class="text-sm font-bold text-slate-800">Sẵn Sàng Tiếp Nhận & Thẩm Định</h3>
+              <p class="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
+                Chọn mẫu thử nghiệm nhanh ở trên hoặc dán nội dung email thực tế của bạn để AI Agent xử lý.
+              </p>
+              <button onclick="loadAgentSample('sample_complete')" class="text-xs bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold px-4 py-2 rounded-xl transition">
+                ⚡ Chạy mẫu Đủ Thông Tin Chuẩn
+              </button>
+            </div>
+
+            <div id="agent-output-result" class="hidden space-y-4">
+              <!-- Dynamically rendered -->
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- VIEW 3: APPROVALS PORTAL -->
+      <div id="view-approvals" class="hidden space-y-6">
+        <div class="clay-card p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-stamp text-pink-500"></i> Cổng Phê Duyệt Của Trưởng Phòng Kinh Doanh
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Xử lý các đề xuất vượt quyền: Chiết khấu > 5%, Đơn hàng lớn > 200 triệu, hoặc cảnh báo SLA tồn kho.</p>
+            </div>
+            <button onclick="loadApprovalsList()" class="text-xs bg-purple-50 text-purple-700 font-bold px-3 py-1.5 rounded-xl hover:bg-purple-100 transition">
+              <i class="fa-solid fa-rotate-right mr-1"></i> Làm mới
+            </button>
+          </div>
+
+          <div id="approvals-cards-list" class="space-y-4">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+
+      <!-- VIEW 4: OPPORTUNITY PIPELINE -->
+      <div id="view-pipeline" class="hidden space-y-6">
+        <div class="clay-card p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h2 class="text-base font-bold text-slate-800">Hồ Sơ Cơ Hội Bán Hàng (Opportunity Pipeline)</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Quản lý toàn bộ 180 yêu cầu/tuần và trạng thái phân bổ cho 6 NVKD.</p>
+            </div>
+            <button onclick="loadPipelineData()" class="text-xs bg-slate-100 text-slate-700 font-bold px-3 py-1.5 rounded-xl hover:bg-slate-200 transition">
+              <i class="fa-solid fa-rotate-right mr-1"></i> Cập nhật
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100">
+                <tr>
+                  <th class="p-3">Mã Cơ Hội</th>
+                  <th class="p-3">Khách Hàng & Công Ty</th>
+                  <th class="p-3">NVKD Phụ Trách</th>
+                  <th class="p-3 text-right">Tổng Báo Giá</th>
+                  <th class="p-3 text-center">Chiết Khấu</th>
+                  <th class="p-3 text-center">Trạng Thái</th>
+                  <th class="p-3 text-center">Chi Tiết</th>
+                </tr>
+              </thead>
+              <tbody id="pipeline-tbody" class="divide-y divide-slate-100">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- VIEW 5: CATALOG & INVENTORY (Editable Table) -->
+      <div id="view-catalog" class="hidden space-y-6">
+        
+        <!-- 6 Sales Reps -->
+        <div class="clay-card p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-users text-purple-600"></i> Đội Ngũ 6 Nhân Viên Kinh Doanh (Sales Team)
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Nhấp vào bất kỳ NVKD nào để chỉnh sửa thông tin hoặc điều chỉnh số lead hiện tại.</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="catalog-reps-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Master Products -->
+        <div class="clay-card p-6">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-boxes-stacked text-indigo-600"></i> Danh Mục Bảng Giá & Tồn Kho Khả Dụng (ATP)
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Dữ liệu gốc chống dùng giá cũ và cam kết thời hạn sai. Nhấn "Sửa" để thay đổi ngay.</p>
+            </div>
+            <button onclick="openAddProductModal()" class="text-xs bg-purple-600 hover:bg-purple-700 text-white font-bold px-3 py-1.5 rounded-xl transition shadow-sm">
+              <i class="fa-solid fa-plus mr-1"></i> Thêm Sản Phẩm Mới
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100">
+                <tr>
+                  <th class="p-3">Mã SKU</th>
+                  <th class="p-3">Tên Thiết Bị / Dịch Vụ</th>
+                  <th class="p-3">Danh Mục</th>
+                  <th class="p-3 text-right">Đơn Giá Niêm Yết</th>
+                  <th class="p-3 text-center">Tồn Khả Dụng</th>
+                  <th class="p-3 text-center">Lead Time</th>
+                  <th class="p-3 text-center">Bảo Hành</th>
+                  <th class="p-3 text-center">Hành Động</th>
+                </tr>
+              </thead>
+              <tbody id="catalog-products-tbody" class="divide-y divide-slate-100">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+
+  <!-- ==================================================== -->
+  <!-- MODALS FOR USER SELF-EDITING LOCALHOST DATA -->
+  <!-- ==================================================== -->
+
+  <!-- Modal 1: Edit Metrics & Settings -->
+  <div id="modal-edit-numbers" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-4 border border-purple-100">
+      <div class="flex justify-between items-center">
+        <h3 class="font-extrabold text-slate-800 text-base flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-purple-600"></i> Tự Chỉnh Sửa Số Liệu Localhost
+        </h3>
+        <button onclick="closeModal('modal-edit-numbers')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <p class="text-xs text-slate-500">Các số liệu này sẽ được lưu trực tiếp vào cơ sở dữ liệu SQLite của bạn, không bịa số.</p>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Tasks Done (Thẻ 1):</label>
+          <input type="text" id="edit-kpi-done" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-purple-400 font-semibold">
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">In Progress (Thẻ 2):</label>
+          <input type="text" id="edit-kpi-progress" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-purple-400 font-semibold">
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Completed (Thẻ 3):</label>
+          <input type="text" id="edit-kpi-completed" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-purple-400 font-semibold">
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Focus Time (Thẻ 4):</label>
+          <input type="text" id="edit-kpi-focus" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-purple-400 font-semibold">
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button onclick="closeModal('modal-edit-numbers')" class="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-100 transition">Hủy</button>
+        <button onclick="saveCustomMetrics()" class="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow transition">Lưu Thay Đổi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Edit Profile & Greeting -->
+  <div id="modal-edit-profile" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-purple-100">
+      <div class="flex justify-between items-center">
+        <h3 class="font-extrabold text-slate-800 text-base">Chỉnh Sửa Tên & Lời Chào</h3>
+        <button onclick="closeModal('modal-edit-profile')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Tên hiển thị:</label>
+          <input type="text" id="edit-user-name" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-purple-400 font-semibold">
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Lời chào dưới tên:</label>
+          <input type="text" id="edit-user-greeting" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-purple-400 font-semibold">
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button onclick="closeModal('modal-edit-profile')" class="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-100 transition">Hủy</button>
+        <button onclick="saveUserProfile()" class="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow transition">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Add To-Do Task -->
+  <div id="modal-add-task" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-pink-100">
+      <div class="flex justify-between items-center">
+        <h3 class="font-extrabold text-slate-800 text-base flex items-center gap-2">
+          <i class="fa-solid fa-plus text-pink-500"></i> Thêm Công Việc To-Do Mới
+        </h3>
+        <button onclick="closeModal('modal-add-task')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Nội dung công việc:</label>
+          <input type="text" id="new-task-title" placeholder="VD: Duyệt hợp đồng Cisco..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-pink-400 font-semibold">
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Icon / Emoji:</label>
+          <input type="text" id="new-task-emoji" value="📝" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-pink-400 font-semibold">
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Hạn chót / Ghi chú thời gian:</label>
+          <input type="text" id="new-task-due" value="Hôm nay" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-1 focus:ring-pink-400 font-semibold">
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button onclick="closeModal('modal-add-task')" class="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-100 transition">Hủy</button>
+        <button onclick="submitNewTask()" class="px-5 py-2 rounded-xl bg-pink-500 hover:bg-pink-600 text-white font-bold text-xs shadow transition">Thêm Công Việc</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Edit Chart Data -->
+  <div id="modal-edit-chart" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-4 border border-purple-100">
+      <div class="flex justify-between items-center">
+        <h3 class="font-extrabold text-slate-800 text-base">Chỉnh Sửa Số Liệu Biểu Đồ (7 Ngày)</h3>
+        <button onclick="closeModal('modal-edit-chart')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <p class="text-xs text-slate-500">Nhập giá trị năng suất (từ 0 đến 100) cho từng ngày trong tuần:</p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs" id="chart-inputs-container">
+        <!-- Generated by JS -->
+      </div>
+
+      <div class="text-xs">
+        <label class="font-bold text-slate-700 block mb-1">Badge khen ngợi trên biểu đồ:</label>
+        <input type="text" id="edit-chart-badge" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button onclick="closeModal('modal-edit-chart')" class="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-100 transition">Hủy</button>
+        <button onclick="saveChartData()" class="px-5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow transition">Lưu Biểu Đồ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 5: Edit Product / Stock -->
+  <div id="modal-edit-product" class="fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4 border border-indigo-100">
+      <div class="flex justify-between items-center">
+        <h3 class="font-extrabold text-slate-800 text-base" id="product-modal-title">Chỉnh Sửa Sản Phẩm / Tồn Kho</h3>
+        <button onclick="closeModal('modal-edit-product')" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Mã SKU:</label>
+          <input type="text" id="prod-sku" readonly class="w-full p-2.5 bg-slate-100 border border-slate-200 rounded-xl font-mono font-semibold">
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">Tên thiết bị / Dịch vụ:</label>
+          <input type="text" id="prod-name" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Đơn giá niêm yết (VNĐ):</label>
+            <input type="number" id="prod-price" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Tồn kho khả dụng (ATP):</label>
+            <input type="number" id="prod-stock" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Lead time (ngày nhập):</label>
+            <input type="number" id="prod-leadtime" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">Bảo hành (tháng):</label>
+            <input type="number" id="prod-warranty" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+        <button onclick="closeModal('modal-edit-product')" class="px-4 py-2 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-100 transition">Hủy</button>
+        <button onclick="saveProductData()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow transition">Lưu Dữ Liệu</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==================================================== -->
+  <!-- JAVASCRIPT APP LOGIC -->
+  <!-- ==================================================== -->
+  <script>
+    let currentChartData = {
+      labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+      values: [25, 48, 72, 60, 78, 85, 92],
+      badge: "Great job! 🎉"
+    };
+
+    let cachedSamples = [];
+    let currentCalMonth = 4; // May (0-indexed: 4)
+    let currentCalYear = 2026;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadStatsAndSettings();
+      loadTasks();
+      loadActivities();
+      loadChartData();
+      renderCalendar(currentCalMonth, currentCalYear);
+      loadAgentSamples();
+      loadPipelineData();
+      loadCatalogData();
+    });
+
+    // VIEW SWITCHER
+    function switchView(viewId) {
+      ['dashboard', 'agent', 'approvals', 'pipeline', 'catalog'].forEach(id => {
+        const el = document.getElementById(`view-${id}`);
+        if (el) el.classList.add('hidden');
+
+        const nav = document.getElementById(`nav-${id}`);
+        if (nav) {
+          nav.classList.remove('menu-active');
+          nav.classList.add('text-slate-600');
+        }
+      });
+
+      const activeView = document.getElementById(`view-${viewId}`);
+      if (activeView) activeView.classList.remove('hidden');
+
+      const activeNav = document.getElementById(`nav-${viewId}`);
+      if (activeNav) {
+        activeNav.classList.remove('text-slate-600');
+        activeNav.classList.add('menu-active');
+      }
+
+      if (viewId === 'approvals') loadApprovalsList();
+      if (viewId === 'pipeline') loadPipelineData();
+      if (viewId === 'catalog') loadCatalogData();
+    }
+
+    async function resetAllDataToZero() {
+      if (!confirm("Bạn có chắc chắn muốn đưa toàn bộ số liệu về 0 để tự nhập từ đầu không?")) return;
+      try {
+        const res = await fetch('/api/reset-data', { method: 'POST' });
+        const data = await res.json();
+        alert("Đã đưa toàn bộ số liệu về 0! Bây giờ bạn có thể tự nhập bất kỳ số liệu nào.");
+        loadStatsAndSettings();
+        loadTasks();
+        loadActivities();
+        loadChartData();
+        loadPipelineData();
+      } catch (err) {
+        alert("Lỗi khi reset: " + err.message);
+      }
+    }
+
+    // STATS & USER SETTINGS
+    async function loadStatsAndSettings() {
+      try {
+        const res = await fetch('/api/stats');
+        const data = await res.json();
+        
+        document.getElementById('metric-done').textContent = (data.custom_kpi_done !== undefined && data.custom_kpi_done !== '') ? data.custom_kpi_done : '0';
+        document.getElementById('metric-progress').textContent = (data.custom_kpi_progress !== undefined && data.custom_kpi_progress !== '') ? data.custom_kpi_progress : '0';
+        document.getElementById('metric-completed').textContent = (data.custom_kpi_completed !== undefined && data.custom_kpi_completed !== '') ? data.custom_kpi_completed : '0';
+        document.getElementById('metric-focus').textContent = (data.custom_kpi_focus !== undefined && data.custom_kpi_focus !== '') ? data.custom_kpi_focus : '0h';
+
+        const name = data.user_name || 'Quản trị viên';
+        document.getElementById('sidebar-user-name').textContent = `Hi, ${name}! ✨`;
+        document.getElementById('header-user-greeting-title').textContent = `Good morning, ${name}! ☁️`;
+        document.getElementById('header-user-subtitle').textContent = data.user_greeting || "Nhấp vào đây để nhập ghi chú hoặc mục tiêu của bạn.";
+
+        const pending = data.pending_approval || 0;
+        const navBadge = document.getElementById('nav-pending-badge');
+        const bellBadge = document.getElementById('header-bell-badge');
+        if (navBadge) navBadge.textContent = pending;
+        if (bellBadge) bellBadge.textContent = pending;
+      } catch (err) {
+        console.error("Error loading stats:", err);
+      }
+    }
+
+    function quickEditMetric(key, label) {
+      const current = document.getElementById(key === 'custom_kpi_done' ? 'metric-done' : key === 'custom_kpi_progress' ? 'metric-progress' : key === 'custom_kpi_completed' ? 'metric-completed' : 'metric-focus').textContent;
+      const val = prompt(`Nhập số liệu mới cho [${label}]:`, current);
+      if (val !== null && val.trim() !== '') {
+        saveSettingDirect(key, val.trim());
+      }
+    }
+
+    async function saveSettingDirect(key, val) {
+      const payload = {};
+      payload[key] = val;
+      await fetch('/api/settings/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      loadStatsAndSettings();
+    }
+
+    function openEditNumbersModal() {
+      document.getElementById('edit-kpi-done').value = document.getElementById('metric-done').textContent;
+      document.getElementById('edit-kpi-progress').value = document.getElementById('metric-progress').textContent;
+      document.getElementById('edit-kpi-completed').value = document.getElementById('metric-completed').textContent;
+      document.getElementById('edit-kpi-focus').value = document.getElementById('metric-focus').textContent;
+      document.getElementById('modal-edit-numbers').classList.remove('hidden');
+    }
+
+    async function saveCustomMetrics() {
+      const payload = {
+        custom_kpi_done: document.getElementById('edit-kpi-done').value.trim(),
+        custom_kpi_progress: document.getElementById('edit-kpi-progress').value.trim(),
+        custom_kpi_completed: document.getElementById('edit-kpi-completed').value.trim(),
+        custom_kpi_focus: document.getElementById('edit-kpi-focus').value.trim()
+      };
+      await fetch('/api/settings/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      closeModal('modal-edit-numbers');
+      loadStatsAndSettings();
+    }
+
+    function openEditProfileModal() {
+      document.getElementById('edit-user-name').value = document.getElementById('sidebar-user-name').textContent.replace('Hi, ', '').replace('! ✨', '');
+      document.getElementById('edit-user-greeting').value = document.getElementById('header-user-subtitle').textContent;
+      document.getElementById('modal-edit-profile').classList.remove('hidden');
+    }
+
+    async function saveUserProfile() {
+      const name = document.getElementById('edit-user-name').value.trim() || 'Emily';
+      const greeting = document.getElementById('edit-user-greeting').value.trim() || "Here's what's happening today.";
+      await fetch('/api/settings/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_name: name, user_greeting: greeting })
+      });
+      closeModal('modal-edit-profile');
+      loadStatsAndSettings();
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+
+    // TO-DO LIST LOGIC
+    async function loadTasks() {
+      try {
+        const res = await fetch('/api/tasks');
+        const tasks = await res.json();
+        const container = document.getElementById('todo-list-container');
+        if (tasks.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-6 px-3 bg-pink-50/40 rounded-2xl border border-pink-100/60">
+              <span class="text-2xl mb-1 block">📝</span>
+              <div class="text-xs font-bold text-slate-700">Chưa có công việc nào</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">Bấm nút tròn hồng (+) góc trên để tự thêm việc của bạn.</div>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = tasks.map(t => `
+          <div class="flex items-center justify-between p-2.5 rounded-2xl hover:bg-slate-50/80 transition group">
+            <label class="flex items-center space-x-3 cursor-pointer flex-1">
+              <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask(${t.id})" 
+                     class="w-4 h-4 rounded-md text-emerald-500 focus:ring-0 border-slate-300 custom-checkbox cursor-pointer">
+              <span class="text-xs font-semibold ${t.completed ? 'line-through text-slate-400' : 'text-slate-700'}">${t.title}</span>
+            </label>
+            <button onclick="deleteTask(${t.id})" class="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 text-xs px-1 transition">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error("Error loading tasks:", err);
+      }
+    }
+
+    function openAddTaskModal() {
+      document.getElementById('new-task-title').value = '';
+      document.getElementById('modal-add-task').classList.remove('hidden');
+    }
+
+    async function submitNewTask() {
+      const title = document.getElementById('new-task-title').value.trim();
+      const emoji = document.getElementById('new-task-emoji').value.trim() || '📝';
+      const due = document.getElementById('new-task-due').value.trim() || 'Hôm nay';
+      if (!title) return alert("Vui lòng nhập nội dung công việc!");
+
+      await fetch('/api/tasks/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: `${title} ${emoji}`, emoji, due_info: due })
+      });
+      closeModal('modal-add-task');
+      loadTasks();
+    }
+
+    async function toggleTask(id) {
+      await fetch(`/api/tasks/${id}/toggle`, { method: 'POST' });
+      loadTasks();
+    }
+
+    async function deleteTask(id) {
+      await fetch(`/api/tasks/${id}/delete`, { method: 'POST' });
+      loadTasks();
+    }
+
+    // RECENT ACTIVITY LOGIC
+    async function loadActivities() {
+      try {
+        const res = await fetch('/api/activities');
+        const acts = await res.json();
+        const container = document.getElementById('recent-activity-container');
+        if (acts.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-6 px-3 bg-slate-50/70 rounded-2xl border border-slate-100">
+              <span class="text-2xl mb-1 block">⚡</span>
+              <div class="text-xs font-bold text-slate-700">Chưa có hoạt động nào</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">Khi bạn thao tác hoặc AI Agent tiếp nhận email, tiến trình sẽ hiện ở đây.</div>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = acts.map(a => {
+          let badgeClass = 'clay-badge-green text-emerald-600';
+          let icon = 'fa-check';
+          if (a.icon_type === 'folder') {
+            badgeClass = 'clay-badge-yellow text-amber-600';
+            icon = 'fa-folder';
+          } else if (a.icon_type === 'message') {
+            badgeClass = 'clay-badge-pink text-pink-600';
+            icon = 'fa-message';
+          } else if (a.icon_type === 'alert') {
+            badgeClass = 'clay-badge-purple text-purple-600';
+            icon = 'fa-shield-halved';
+          }
+
+          return `
+            <div class="flex items-center justify-between p-3 rounded-2xl bg-white border border-slate-100 hover:border-slate-200 transition shadow-xs">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl ${badgeClass} flex items-center justify-center text-xs font-bold">
+                  <i class="fa-solid ${icon}"></i>
+                </div>
+                <span class="text-xs font-semibold text-slate-800">${a.title}</span>
+              </div>
+              <span class="text-[11px] font-medium text-slate-400 whitespace-nowrap ml-3">${a.time_ago}</span>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error("Error loading activities:", err);
+      }
+    }
+
+    function openAddActivityModal() {
+      const title = prompt("Nhập nội dung hoạt động mới:");
+      if (title) {
+        fetch('/api/process', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: `Hoạt động thủ công: ${title}` })
+        }).then(() => loadActivities());
+      }
+    }
+
+    // CHART RENDER & EDIT LOGIC
+    async function loadChartData() {
+      try {
+        const res = await fetch('/api/chart-data');
+        currentChartData = await res.json();
+        renderChart(currentChartData);
+      } catch (err) {
+        console.error("Error loading chart data:", err);
+      }
+    }
+
+    function renderChart(data) {
+      const badge = document.getElementById('chart-badge');
+      if (badge && data.badge) badge.innerHTML = `<span>${data.badge}</span>`;
+
+      const values = data.values || [0, 0, 0, 0, 0, 0, 0];
+      const count = values.length;
+      const xStart = 50;
+      const xEnd = 620;
+      const step = (xEnd - xStart) / (count - 1);
+
+      const points = values.map((val, idx) => {
+        const x = xStart + idx * step;
+        const y = 190 - (val / 100) * 170; // 0 is at 190, 100 is at 20
+        return { x, y, val };
+      });
+
+      // Build smooth curved path (Catmull-Rom or Bezier)
+      let dLine = `M ${points[0].x} ${points[0].y}`;
+      for (let i = 0; i < points.length - 1; i++) {
+        const p0 = points[i];
+        const p1 = points[i + 1];
+        const cp1x = p0.x + (p1.x - p0.x) / 2;
+        const cp1y = p0.y;
+        const cp2x = p0.x + (p1.x - p0.x) / 2;
+        const cp2y = p1.y;
+        dLine += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p1.x} ${p1.y}`;
+      }
+
+      document.getElementById('chart-line-path').setAttribute('d', dLine);
+      const dArea = `${dLine} L ${points[points.length - 1].x} 190 L ${points[0].x} 190 Z`;
+      document.getElementById('chart-area-path').setAttribute('d', dArea);
+
+      // Render circular point markers
+      const pointsGroup = document.getElementById('chart-points-group');
+      pointsGroup.innerHTML = points.map((p, idx) => `
+        <circle cx="${p.x}" cy="${p.y}" r="5" fill="#9E77F6" stroke="#FFFFFF" stroke-width="2.5" class="hover:r-7 transition cursor-pointer">
+          <title>${data.labels ? data.labels[idx] : ''}: ${p.val}%</title>
+        </circle>
+      `).join('');
+    }
+
+    function openEditChartModal() {
+      const container = document.getElementById('chart-inputs-container');
+      const vals = currentChartData.values || [0, 0, 0, 0, 0, 0, 0];
+      const labels = currentChartData.labels || ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+
+      container.innerHTML = labels.map((l, i) => `
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">${l}:</label>
+          <input type="number" id="chart-val-${i}" value="${vals[i]}" min="0" max="100" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl font-semibold">
+        </div>
+      `).join('');
+
+      document.getElementById('edit-chart-badge').value = currentChartData.badge || "Great job! 🎉";
+      document.getElementById('modal-edit-chart').classList.remove('hidden');
+    }
+
+    async function saveChartData() {
+      const vals = [];
+      const labels = currentChartData.labels || ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      for (let i = 0; i < labels.length; i++) {
+        const input = document.getElementById(`chart-val-${i}`);
+        vals.push(input ? parseInt(input.value) || 0 : 50);
+      }
+      const badge = document.getElementById('edit-chart-badge').value.trim() || "Tuyệt vời! 🎉";
+
+      const newChart = { labels, values: vals, badge };
+      await fetch('/api/chart-data/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newChart)
+      });
+
+      closeModal('modal-edit-chart');
+      loadChartData();
+    }
+
+    function changeChartPeriod(period) {
+      if (period === 'month') {
+        renderChart({
+          labels: ["W1", "W2", "W3", "W4", "W5", "W6", "W7"],
+          values: [40, 55, 68, 75, 82, 88, 95],
+          badge: "Mục tiêu tháng đạt 95%! 🚀"
+        });
+      } else if (period === 'year') {
+        renderChart({
+          labels: ["Q1", "Q2", "Q3", "Q4", "Q5", "Q6", "Q7"],
+          values: [30, 45, 60, 70, 85, 90, 98],
+          badge: "Tăng trưởng năm +35%! 📈"
+        });
+      } else {
+        loadChartData();
+      }
+    }
+
+    // CALENDAR LOGIC
+    function renderCalendar(month, year) {
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      document.getElementById('calendar-month-label').textContent = `${monthNames[month]} ${year}`;
+
+      const grid = document.getElementById('calendar-days-grid');
+      const firstDay = new Date(year, month, 1).getDay(); // 0 is Sunday
+      const shift = (firstDay === 0 ? 6 : firstDay - 1); // Monday is 0
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      let html = '';
+      for (let i = 0; i < shift; i++) {
+        html += `<span class="text-slate-300 py-1 font-normal">${28 + i}</span>`;
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const isCurrent = (d === 15); // May 15 active blue bubble in Emily's sample
+        if (isCurrent) {
+          html += `<span class="w-6 h-6 rounded-full bg-blue-500 text-white font-bold flex items-center justify-center mx-auto shadow-sm">${d}</span>`;
+        } else {
+          html += `<span class="text-slate-700 py-1 hover:text-blue-600 cursor-pointer font-medium">${d}</span>`;
+        }
+      }
+      grid.innerHTML = html;
+    }
+
+    function changeCalendarMonth(delta) {
+      currentCalMonth += delta;
+      if (currentCalMonth > 11) { currentCalMonth = 0; currentCalYear++; }
+      if (currentCalMonth < 0) { currentCalMonth = 11; currentCalYear--; }
+      renderCalendar(currentCalMonth, currentCalYear);
+    }
+
+    // AI AGENT WORKFLOW & SAMPLES
+    async function loadAgentSamples() {
+      try {
+        const res = await fetch('/api/sample-requests');
+        cachedSamples = await res.json();
+        const container = document.getElementById('agent-samples-list');
+        container.innerHTML = cachedSamples.map(s => `
+          <button onclick="loadAgentSample('${s.id}')" class="text-left p-3 rounded-2xl bg-white border border-purple-100 hover:border-purple-300 hover:bg-purple-50/50 transition flex flex-col justify-between shadow-xs">
+            <div>
+              <div class="font-bold text-xs text-purple-900 mb-1">${s.title}</div>
+              <div class="text-[10px] text-slate-500 line-clamp-2 leading-relaxed">${s.desc}</div>
+            </div>
+            <div class="mt-2 text-[10px] font-bold text-purple-600 flex items-center gap-1">
+              <span>Nạp mẫu này</span> <i class="fa-solid fa-arrow-right text-[8px]"></i>
+            </div>
+          </button>
+        `).join('');
+      } catch (err) {
+        console.error("Error loading agent samples:", err);
+      }
+    }
+
+    function loadAgentSample(id) {
+      const s = cachedSamples.find(x => x.id === id);
+      if (s) {
+        document.getElementById('agent-input-textarea').value = s.text;
+      }
+    }
+
+    async function executeAgentWorkflow() {
+      const text = document.getElementById('agent-input-textarea').value.trim();
+      if (!text) return alert("Vui lòng nhập nội dung yêu cầu!");
+
+      document.getElementById('agent-output-placeholder').classList.add('hidden');
+      const out = document.getElementById('agent-output-result');
+      out.classList.remove('hidden');
+      out.innerHTML = `<div class="clay-card p-10 text-center text-xs text-slate-500"><div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-purple-500 border-t-transparent mb-3"></div><div class="font-bold text-slate-700">AI Agent đang thẩm định tồn kho & giá...</div></div>`;
+
+      try {
+        const res = await fetch('/api/process', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        const data = await res.json();
+        renderAgentOutput(data);
+        loadStatsAndSettings();
+        loadActivities();
+      } catch (err) {
+        alert("Lỗi khi xử lý: " + err.message);
+      }
+    }
+
+    function renderAgentOutput(data) {
+      // Update Flowchart Lightbox
+      for (let i = 1; i <= 6; i++) {
+        const stepEl = document.getElementById(`fc-step-${i}`);
+        stepEl.className = "p-2.5 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-between";
+        stepEl.querySelector('.pill').textContent = "Hoàn tất";
+        stepEl.querySelector('.pill').className = "text-emerald-600 font-bold pill";
+      }
+
+      if (!data.is_sufficient) {
+        document.getElementById('fc-step-2').className = "p-2.5 rounded-xl border border-amber-300 bg-amber-50 flex items-center justify-between";
+        document.getElementById('fc-step-2').querySelector('.pill').textContent = "Thiếu thông tin";
+        document.getElementById('fc-step-2').querySelector('.pill').className = "text-amber-700 font-bold pill";
+      }
+
+      const out = document.getElementById('agent-output-result');
+
+      if (!data.is_sufficient) {
+        out.innerHTML = `
+          <div class="clay-card p-5 border-amber-200 bg-amber-50/50 space-y-3">
+            <div class="flex items-center gap-2 text-amber-800 font-bold text-xs uppercase">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>YÊU CẦU THIẾU THÔNG TIN (RẼ NHÁNH SOẠN EMAIL LÀM RÕ)</span>
+            </div>
+            <p class="text-xs text-amber-700 leading-relaxed">
+              Các thông tin còn thiếu cần khách hàng bổ sung:
+            </p>
+            <ul class="list-disc list-inside text-xs font-semibold text-amber-900 bg-white/80 p-3 rounded-xl border border-amber-200/60 space-y-1">
+              ${data.missing_fields.map(f => `<li>${f}</li>`).join('')}
+            </ul>
+
+            <div class="pt-2">
+              <label class="text-xs font-bold text-slate-700 block mb-1.5">Bản nháp Email phản hồi tự động:</label>
+              <textarea readonly rows="7" class="w-full text-xs font-mono p-3 rounded-xl bg-white border border-slate-200 text-slate-800">${data.clarification_email}</textarea>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Sufficient Info -> Proposal View
+      out.innerHTML = `
+        <div class="clay-card p-5 space-y-4">
+          <div class="flex justify-between items-start pb-3 border-b border-slate-100">
+            <div>
+              <span class="text-xs font-mono font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full">#${data.code}</span>
+              <h3 class="text-base font-bold text-slate-900 mt-1">${data.client_info.company} (${data.client_info.name})</h3>
+              <p class="text-xs text-slate-500">NVKD: <b class="text-slate-700">${data.assigned_rep.name}</b> | Hạn giao cam kết: <b class="text-blue-600">${data.feasible_deadline}</b></p>
+            </div>
+            <div class="text-right">
+              <span class="text-xs text-slate-400 block font-semibold">Tổng thanh toán:</span>
+              <span class="text-lg font-bold text-blue-700 font-mono">${data.total_final.toLocaleString('vi-VN')} đ</span>
+              <span class="text-xs font-bold text-purple-600 block">CK: ${data.discount_pct}%</span>
+            </div>
+          </div>
+
+          <!-- Product evaluation table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-500 font-semibold">
+                <tr>
+                  <th class="p-2">SKU</th>
+                  <th class="p-2">Tên Thiết Bị</th>
+                  <th class="p-2 text-center">SL</th>
+                  <th class="p-2 text-right">Đơn Giá</th>
+                  <th class="p-2 text-right">Thành Tiền</th>
+                  <th class="p-2 text-center">Tồn Kho</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                ${data.items.map(it => `
+                  <tr>
+                    <td class="p-2 font-mono text-[11px] text-slate-500">${it.sku}</td>
+                    <td class="p-2 font-medium text-slate-800">${it.name}</td>
+                    <td class="p-2 text-center font-bold">${it.quantity}</td>
+                    <td class="p-2 text-right font-mono">${it.unit_price.toLocaleString('vi-VN')} đ</td>
+                    <td class="p-2 text-right font-mono font-bold text-slate-900">${it.total_price.toLocaleString('vi-VN')} đ</td>
+                    <td class="p-2 text-center">
+                      <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${it.is_stock_sufficient ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
+                        ${it.is_stock_sufficient ? 'Đủ kho' : `Thiếu (${it.item_lead_time_days} ngày)`}
+                      </span>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Email proposal draft -->
+          <div class="pt-2">
+            <div class="flex justify-between items-center mb-1.5">
+              <label class="text-xs font-bold text-slate-700">Bản nháp Email gửi khách hàng (Sẵn sàng):</label>
+              <button onclick="navigator.clipboard.writeText(document.getElementById('email-out-txt').value); alert('Đã sao chép email!')" class="text-xs text-purple-600 font-bold hover:underline">
+                <i class="fa-regular fa-copy"></i> Sao chép
+              </button>
+            </div>
+            <textarea id="email-out-txt" readonly rows="8" class="w-full text-xs font-mono p-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 leading-relaxed">${data.proposal_email_draft}</textarea>
+          </div>
+        </div>
+      `;
+    }
+
+    // APPROVALS LIST
+    async function loadApprovalsList() {
+      try {
+        const res = await fetch('/api/opportunities');
+        const list = await res.json();
+        const pending = list.filter(x => x.status === 'PENDING_APPROVAL');
+        const container = document.getElementById('approvals-cards-list');
+
+        if (pending.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-12 text-slate-400 bg-purple-50/30 rounded-2xl border border-purple-100">
+              <i class="fa-solid fa-circle-check text-3xl text-emerald-500 mb-2"></i>
+              <div class="font-bold text-slate-700 text-sm">Không có hồ sơ nào đang chờ duyệt!</div>
+              <div class="text-xs mt-0.5">Tất cả đề xuất đều nằm trong hạn mức 5% của NVKD.</div>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = pending.map(item => `
+          <div class="p-5 rounded-2xl border border-purple-200 bg-white shadow-xs space-y-3">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-xs font-mono font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full">#${item.code}</span>
+                <h4 class="text-base font-bold text-slate-900 mt-1">${item.client_company} (${item.client_name})</h4>
+                <p class="text-xs text-slate-500">NVKD: <b class="text-slate-700">${item.assigned_rep_name}</b> | Ngày tiếp nhận: ${item.created_at}</p>
+              </div>
+              <div class="text-right">
+                <span class="text-xs text-slate-400 block font-semibold">Tổng giá trị đơn:</span>
+                <span class="text-base font-bold text-blue-700 font-mono">${(item.total_final_price || 0).toLocaleString('vi-VN')} đ</span>
+                <span class="text-xs font-bold text-pink-600 block">Đề xuất CK: ${item.requested_discount_pct}%</span>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-purple-50/70 border border-purple-100 text-xs text-purple-900 space-y-1">
+              <span class="font-bold flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> Lý do vượt quyền:</span>
+              <div>${item.manager_notes || "Yêu cầu chiết khấu vượt thẩm quyền tự quyết của NVKD."}</div>
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+              <button onclick="submitApprovalDecision(${item.id}, 'REJECT')" class="px-3.5 py-1.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-50 transition">
+                Từ chối / Đàm phán lại
+              </button>
+              <button onclick="submitApprovalDecision(${item.id}, 'APPROVE')" class="px-4 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition">
+                Phê Duyệt Ngay
+              </button>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error("Error loading approvals:", err);
+      }
+    }
+
+    async function submitApprovalDecision(id, action) {
+      const notes = prompt(action === 'APPROVE' ? "Ghi chú phê duyệt (tùy chọn):" : "Lý do từ chối:");
+      if (notes === null) return;
+
+      await fetch(`/api/opportunities/${id}/approval`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, notes })
+      });
+      loadApprovalsList();
+      loadStatsAndSettings();
+    }
+
+    // PIPELINE DATA
+    async function loadPipelineData() {
+      try {
+        const res = await fetch('/api/opportunities');
+        const list = await res.json();
+        const tbody = document.getElementById('pipeline-tbody');
+
+        if (list.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-slate-400">Chưa có cơ hội nào.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = list.map(item => `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3 font-mono font-bold text-purple-600">${item.code}</td>
+            <td class="p-3">
+              <div class="font-bold text-slate-800">${item.client_company}</div>
+              <div class="text-[11px] text-slate-400">${item.client_name} - ${item.client_email || item.client_phone}</div>
+            </td>
+            <td class="p-3 font-medium text-slate-700">${item.assigned_rep_name || 'Chưa gán'}</td>
+            <td class="p-3 text-right font-mono font-bold text-slate-900">${(item.total_final_price || 0).toLocaleString('vi-VN')} đ</td>
+            <td class="p-3 text-center font-bold text-purple-600">${item.requested_discount_pct || 0}%</td>
+            <td class="p-3 text-center">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${item.status === 'READY_TO_SEND' ? 'bg-emerald-100 text-emerald-800' : item.status === 'PENDING_APPROVAL' ? 'bg-pink-100 text-pink-800' : 'bg-amber-100 text-amber-800'}">
+                ${item.status}
+              </span>
+            </td>
+            <td class="p-3 text-center">
+              <button onclick="switchView('agent'); document.getElementById('agent-input-textarea').value = '${item.raw_request.replace(/'/g, "\\'")}'; executeAgentWorkflow();" class="text-purple-600 hover:text-purple-800 font-bold text-xs">
+                Xem
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error("Error loading pipeline:", err);
+      }
+    }
+
+    // CATALOG DATA
+    async function loadCatalogData() {
+      try {
+        // Load Reps
+        const resReps = await fetch('/api/sales-reps');
+        const reps = await resReps.json();
+        document.getElementById('catalog-reps-grid').innerHTML = reps.map(r => `
+          <div onclick="editRepPrompt(${r.id}, '${r.name}', ${r.current_leads})" class="p-4 rounded-2xl bg-white border border-slate-200/70 hover:border-purple-300 transition cursor-pointer shadow-xs group">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-xs font-mono font-bold bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">${r.code}</span>
+                <h4 class="font-bold text-sm text-slate-900 mt-1">${r.name}</h4>
+                <p class="text-xs text-slate-500">${r.specialty}</p>
+              </div>
+              <span class="text-xs font-bold bg-purple-50 text-purple-700 px-2 py-1 rounded-xl">
+                ${r.current_leads} leads
+              </span>
+            </div>
+            <div class="mt-2 text-[10px] text-slate-400 group-hover:text-purple-600">Nhấp để sửa số lead hoặc thông tin</div>
+          </div>
+        `).join('');
+
+        // Load Products
+        const resProds = await fetch('/api/products');
+        const prods = await resProds.json();
+        document.getElementById('catalog-products-tbody').innerHTML = prods.map(p => `
+          <tr class="hover:bg-slate-50">
+            <td class="p-3 font-mono font-bold text-purple-700 text-[11px]">${p.sku}</td>
+            <td class="p-3 font-medium text-slate-800">${p.name}</td>
+            <td class="p-3 text-slate-500">${p.category}</td>
+            <td class="p-3 text-right font-mono font-bold">${p.unit_price.toLocaleString('vi-VN')} đ</td>
+            <td class="p-3 text-center font-bold font-mono ${p.stock_qty > 0 ? 'text-emerald-600' : 'text-red-500'}">${p.stock_qty}</td>
+            <td class="p-3 text-center">${p.lead_time_days} ngày</td>
+            <td class="p-3 text-center">${p.warranty_months} tháng</td>
+            <td class="p-3 text-center">
+              <button onclick='openEditProductModal(${JSON.stringify(p)})' class="text-xs text-indigo-600 hover:text-indigo-800 font-bold px-2 py-1 rounded-lg bg-indigo-50">
+                <i class="fa-solid fa-pen"></i> Sửa
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        console.error("Error loading catalog:", err);
+      }
+    }
+
+    function editRepPrompt(id, name, currentLeads) {
+      const val = prompt(`Chỉnh sửa số lượng leads đang phụ trách của [${name}]:`, currentLeads);
+      if (val !== null && !isNaN(val)) {
+        fetch('/api/sales-reps/update', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, name, current_leads: parseInt(val), email: '', phone: '', specialty: '' })
+        }).then(() => loadCatalogData());
+      }
+    }
+
+    function openEditProductModal(p) {
+      document.getElementById('product-modal-title').textContent = "Chỉnh Sửa Sản Phẩm / Tồn Kho";
+      document.getElementById('prod-sku').value = p.sku;
+      document.getElementById('prod-name').value = p.name;
+      document.getElementById('prod-price').value = p.unit_price;
+      document.getElementById('prod-stock').value = p.stock_qty;
+      document.getElementById('prod-leadtime').value = p.lead_time_days;
+      document.getElementById('prod-warranty').value = p.warranty_months;
+      document.getElementById('modal-edit-product').classList.remove('hidden');
+    }
+
+    async function saveProductData() {
+      const payload = {
+        sku: document.getElementById('prod-sku').value,
+        name: document.getElementById('prod-name').value,
+        category: 'Thiết bị & Giải pháp',
+        unit_price: parseFloat(document.getElementById('prod-price').value) || 0,
+        stock_qty: parseInt(document.getElementById('prod-stock').value) || 0,
+        lead_time_days: parseInt(document.getElementById('prod-leadtime').value) || 7,
+        warranty_months: parseInt(document.getElementById('prod-warranty').value) || 12
+      };
+
+      await fetch('/api/products/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      closeModal('modal-edit-product');
+      loadCatalogData();
+    }
+
+    function openAddProductModal() {
+      const sku = prompt("Nhập mã SKU mới (VD: SW-ARUBA-24P):");
+      if (!sku) return;
+      const name = prompt("Nhập tên thiết bị:");
+      if (!name) return;
+      const price = prompt("Nhập đơn giá (VNĐ):", "15000000");
+      const stock = prompt("Nhập số lượng tồn kho khả dụng:", "10");
+
+      fetch('/api/products/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sku, name, category: 'Mới', unit: 'Bộ',
+          unit_price: parseFloat(price) || 0,
+          stock_qty: parseInt(stock) || 0,
+          lead_time_days: 7, warranty_months: 24, description: ''
+        })
+      }).then(() => loadCatalogData());
+    }
+
+    // SEARCH
+    function handleGlobalSearch(e) {
+      const q = e.target.value.toLowerCase().trim();
+      if (e.key === 'Enter' && q) {
+        switchView('pipeline');
+        const rows = document.querySelectorAll('#pipeline-tbody tr');
+        rows.forEach(r => {
+          r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+      }
+    }
+  </script>
+</body>
+</html>
